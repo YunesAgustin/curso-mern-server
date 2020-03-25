@@ -12,8 +12,18 @@ const userRoutes = require('./routes/user');
 app.use(bodyPaser.urlencoded({ extended: false }));
 app.use(bodyPaser.json());
 
-// configure head http
-
+// Configure Header HTTP
+// Con esta configuracion no hace falta que se utilize la extension de CORS en el chrome
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method'
+  );
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
+  next();
+});
 // routes basic...
 app.use(`/api/${API_VERSION}`, authRoutes);
 app.use(`/api/${API_VERSION}`, userRoutes);
