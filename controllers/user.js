@@ -107,6 +107,7 @@ function getUsersActive(req, res) {
     }
   });
 }
+
 function uploadAvatar(req, res) {
   // Para subir un avatar al servidor
   const params = req.params;
@@ -116,7 +117,9 @@ function uploadAvatar(req, res) {
       res.status(500).send({ message: 'Error del servidor.' });
     } else {
       if (!userData) {
-        res.status(404).send({ message: 'No seha encontrado ningun usuario.' });
+        res
+          .status(404)
+          .send({ message: 'No se ha encontrado ningun usuario.' });
       } else {
         // Recuperamos la imagen
         let user = userData;
@@ -175,7 +178,8 @@ function getAvatar(req, res) {
 }
 
 function updateUser(req, res) {
-  const userData = req.body; // Los datos actualizados los mandamos por el body
+  let userData = req.body; // Los datos actualizados los mandamos por el body
+  userData.email = req.body.email.toLowerCase();
   const params = req.params;
 
   // Le paso como segundo parametro el userData q son los datos q actualiza
