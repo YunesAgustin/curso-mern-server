@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const bcrypt = require('bcryptjs');
 const saltRounds = 10; // Es para poder usar el bcrypt
 const jwt = require('../services/jwt');
@@ -105,9 +107,98 @@ function getUsersActive(req, res) {
     }
   });
 }
+function uploadAvatar(req, res) {
+  // Para subir un avatar al servidor
+  const params = req.params;
+
+  User.findById({ _id: params.id }, (err, userData) => {
+    if (err) {
+      res.status(500).send({ message: 'Error del servidor.' });
+    } else {
+      if (!userData) {
+        res.status(404).send({ message: 'No seha encontrado ningun usuario.' });
+      } else {
+        // Recuperamos la imagen
+        let user = userData;
+
+        if (req.files) {
+          let filePath = req.files.avatar.path;
+          let fileSplit = filePath.split('/');
+          let fileName = fileSplit[2];
+          let extSplit = fileName.split('.');
+          let fileExt = extSplit[1];
+
+          // Comprobamos si la extension es correcta
+          if (fileExt !== 'png' && fileExt !== 'jpg') {
+            res.status(400).send({
+              message:
+                'La extension de la imagen no es valida. (Extensiones permitidas .png y .jpg)'
+            });
+          } else {
+            // Actualizamos
+            user.avatar = fileName;
+            User.findByIdAndUpdate(
+              { _id: params.id },
+              user,
+              (err, userResult) => {
+                if (err) {
+                  res.status(500).send({ message: 'Error del servidor.' });
+                } else {
+                  if (!userResult) {
+                    res
+                      .status(400)
+                      .send({ message: 'No se ha encontrado ningun usuario.' });
+                  } else {
+                    res.status(200).send({ avatarName: fileName });
+                  }
+                }
+              }
+            );
+          }
+        }
+      }
+    }
+  });
+}
+
+function getAvatar(req, res) {
+  const avatarName = req.params.avatarName; // De aqui tomo el id que le estoy enviando por parametro
+  const filePath = './uploads/avatar/' + avatarName;
+
+  fs.exists(filePath, exists => {
+    if (!exists) {
+      res.status(404).send({ message: 'El avatar que buscas no existe.' });
+    } else {
+      res.sendFile(path.resolve(filePath));
+    }
+  });
+}
+
+function updateUser(req, res) {
+  const userData = req.body; // Los datos actualizados los mandamos por el body
+  const params = req.params;
+
+  // Le paso como segundo parametro el userData q son los datos q actualiza
+  User.findByIdAndUpdate({ _id: params.id }, userData, (err, userUpdate) => {
+    if (err) {
+      res.status(500).send({ message: 'Error del servidor.' });
+    } else {
+      if (!userUpdate) {
+        res
+          .status(404)
+          .send({ message: 'No se ha encontrado ningun usuario.' });
+      } else {
+        res.status(200).send({ message: 'Usuario actualizado correctamente.' });
+      }
+    }
+  });
+}
 module.exports = {
   signUp,
   signIn,
   getUsers,
-  getUsersActive
+  getUsersActive,
+  uploadAvatar,
+  getAvatar,
+  updateUser
 };

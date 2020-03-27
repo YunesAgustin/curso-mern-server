@@ -4,6 +4,8 @@ const moment = require('moment');
 const SECRET_KEY = '2Yu783Her8cHac47';
 
 exports.ensureAuth = (req, res, next) => {
+  // Sirve para proteger la info y que solo los usuarios autorizados pueda ver
+  // (la uso cuando importoo el paquete en la routes)
   if (!req.headers.authorization) {
     return res
       .status(403)

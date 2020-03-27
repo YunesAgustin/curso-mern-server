@@ -4,7 +4,9 @@
   "description": "Back end para la curso mert en udemy",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon index.js",
+    "mongostart": "brew services start mongodb-community",
+    "mongostop": "brew services stop mongodb-community"
   },
   "author": "",
   "license": "ISC",
