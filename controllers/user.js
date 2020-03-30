@@ -99,6 +99,7 @@ function getUsers(req, res) {
 }
 
 function getUsersActive(req, res) {
+  // Baja logica
   const query = req.query;
   User.find({ active: query.active }).then(users => {
     if (!users) {

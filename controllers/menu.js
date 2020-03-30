@@ -22,7 +22,7 @@ function addMenu(req, res) {
 }
 
 function getMenus(req, res) {
-  Menu.find()
+  Menu.find({ deleteLogic: null })
     .sort({ order: 'asc' })
     .exec((err, menusStored) => {
       if (err) {
