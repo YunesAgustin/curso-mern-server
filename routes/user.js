@@ -5,6 +5,9 @@ const md_auth = require('../middlewares/autheticated'); // Cuando lo uso autoriz
 const md_upload_avatar = multipart({ uploadDir: './uploads/avatar' }); // Guardoo los avatars en esta direccion?
 const api = express.Router();
 
+// Si hacen un apeticion diferente pueden usar la misma url,
+// no haria falta que una peticion post, get o put usen una url
+// diferente c/u.
 api.post('/sign-up', UserController.signUp);
 api.post('/sign-in', UserController.signIn);
 api.get('/users', [md_auth.ensureAuth], UserController.getUsers);
