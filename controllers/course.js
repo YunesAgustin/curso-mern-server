@@ -23,7 +23,7 @@ function addCourse(req, res) {
 }
 
 function getCourses(req, res) {
-  Course.find()
+  Course.find({ logicDelete: null })
     .sort({ order: 'asc' })
     .exec((err, courses) => {
       if (err) {
@@ -44,12 +44,8 @@ function updateCourse(req, res) {
   let courseData = req.body;
   const id = req.params.id;
 
-  console.log(courseData);
-  console.log(id);
-
   Course.findByIdAndUpdate(id, courseData, (err, courseUpdate) => {
     if (err) {
-      console.log(err);
       res.status(500).send({ code: 500, message: 'Error del servidor.' });
     } else {
       if (!courseUpdate) {
